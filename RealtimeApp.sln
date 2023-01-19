@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealtimeApp.Server", "RealtimeApp.Server\RealtimeApp.Server.csproj", "{009DB6E4-E9C6-4836-A8BD-469993047D79}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealtimeApp.Client", "RealtimeApp.Client\RealtimeApp.Client.csproj", "{3A4DB18F-D956-4E1E-B623-E1BC3D67CB75}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealtimeApp.Shared", "RealtimeApp.Shared\RealtimeApp.Shared.csproj", "{F2941527-7399-48BC-985C-3722D5708ACB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{009DB6E4-E9C6-4836-A8BD-469993047D79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{009DB6E4-E9C6-4836-A8BD-469993047D79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{009DB6E4-E9C6-4836-A8BD-469993047D79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{009DB6E4-E9C6-4836-A8BD-469993047D79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A4DB18F-D956-4E1E-B623-E1BC3D67CB75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A4DB18F-D956-4E1E-B623-E1BC3D67CB75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A4DB18F-D956-4E1E-B623-E1BC3D67CB75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A4DB18F-D956-4E1E-B623-E1BC3D67CB75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2941527-7399-48BC-985C-3722D5708ACB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2941527-7399-48BC-985C-3722D5708ACB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2941527-7399-48BC-985C-3722D5708ACB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2941527-7399-48BC-985C-3722D5708ACB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
