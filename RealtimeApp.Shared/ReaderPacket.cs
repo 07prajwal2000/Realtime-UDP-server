@@ -26,6 +26,12 @@ public sealed class ReaderPacket : BasePacket, IPacketReader
     public string ReadString() => _reader.ReadString();
     public byte[] ReadBytes(int count) => _reader.ReadBytes(count);
     public char[] ReadChars(int count) => _reader.ReadChars(count);
+    public T? ReadObject<T>()
+    {
+        var length = _reader.ReadInt32();
+        var buffer = _reader.ReadBytes(length);
+        return GetSerializer().Deserialize<T>(buffer);
+    }
     
     #region USELESS
     

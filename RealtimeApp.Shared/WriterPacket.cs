@@ -8,7 +8,6 @@ public sealed class WriterPacket : BasePacket, IPacketWriter
     {
         _writer = new BinaryWriter(MemoryStream);
     }
-
     public WriterPacket(byte[] buffer) : base(buffer)
     {
         _writer = new BinaryWriter(MemoryStream);
@@ -24,6 +23,12 @@ public sealed class WriterPacket : BasePacket, IPacketWriter
     public void WriteString(string value) => _writer.Write(value);
     public void WriteBytes(byte[] value) => _writer.Write(value);
     public void WriteChars(char[] value) => _writer.Write(value);
+    public void WriteObject<T>(T value)
+    {
+        var buffer = GetSerializer().Serialize(value);
+        _writer.Write(buffer.Length);
+        _writer.Write(buffer);
+    }
 
     #region USELESS
 

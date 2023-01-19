@@ -2,8 +2,13 @@
 
 public abstract class BasePacket : IDisposable
 {
+    private static IPacketSerializer _serializer;
+    
     protected bool Disposed;
     protected readonly MemoryStream MemoryStream;
+
+    public static void InitializeSerializer(IPacketSerializer serializer) => _serializer = serializer;
+    protected IPacketSerializer GetSerializer() => _serializer;
 
     public long Length => MemoryStream.Length;
 
