@@ -59,13 +59,13 @@ while (!source.IsCancellationRequested)
                     }
                     i++;
                 }
-                breakList.Add(argsStream.Length - 1);
+                breakList.Add(argsStream.Length);
 
                 var arguments = new List<int>();
                 var initial = 0;
                 foreach (var bp in breakList)
                 {
-                    var res = int.TryParse(argsStream.Slice(initial, bp - initial + 1), out var num);
+                    var res = int.TryParse(argsStream.Slice(initial, bp - initial), out var num);
                     arguments.Add(res ? num : 0);
                     initial = bp;
                 }
