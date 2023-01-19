@@ -9,7 +9,16 @@ writer.WriteBool(true);
 writer.WriteBool(false);
 writer.WriteInt(1234);
 writer.WriteString("hashcoasdni oahod");
-writer.WriteObject(new User{Age = 22, Name = "Prajwal Aradhya"});
+writer.WriteObject(new User
+    {
+        Age = 22, 
+        Name = "Prajwal Aradhya",
+        UserAddress = new User.Address()
+        {
+            AddressName = "tumkur",
+            CountryCode = 91
+        }
+    });
 
 
 var bytes = Encoding.UTF8.GetBytes("jcaosndowadwaocawcjr");
@@ -32,8 +41,20 @@ public class User
     public int Age { get; set; }
     public string Name { get; set; }
 
+    public Address UserAddress { get; set; }
+    
+    public class Address
+    {
+        public string AddressName { get; set; }
+        public int CountryCode { get; set; }
+        public override string ToString()
+        {
+            return $"{AddressName}, Code - {CountryCode}";
+        }
+    }
+
     public override string ToString()
     {
-        return $"{Name} - {Age}";
+        return $"\n---\n{Name} - {Age}\n{UserAddress}\n---\n";
     }
 }
