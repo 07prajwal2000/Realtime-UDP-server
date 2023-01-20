@@ -8,6 +8,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+      <PackageReference Include="SuperSimpleTcp" Version="3.0.7" />
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\RealtimeApp.Client\RealtimeApp.Client.csproj" />
       <ProjectReference Include="..\RealtimeApp.Server\RealtimeApp.Server.csproj" />
       <ProjectReference Include="..\RealtimeApp.Shared\RealtimeApp.Shared.csproj" />

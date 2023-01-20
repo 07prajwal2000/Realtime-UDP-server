@@ -19,10 +19,20 @@ public sealed class WriterPacket : BasePacket, IPacketWriter
     public void WriteUInt(uint value) => _writer.Write(value);
     public void WriteInt(int value) => _writer.Write(value);
     public void WriteULong(ulong value) => _writer.Write(value);
+    public void WriteFloat(float value) => _writer.Write(value);
+    public void WriteDouble(double value) => _writer.Write(value);
     public void WriteLong(long value) => _writer.Write(value);
     public void WriteString(string value) => _writer.Write(value);
-    public void WriteBytes(byte[] value) => _writer.Write(value);
-    public void WriteChars(char[] value) => _writer.Write(value);
+    public void WriteBytes(byte[] value)
+    {
+        WriteInt(value.Length);
+        _writer.Write(value);
+    }
+    public void WriteChars(char[] value)
+    {
+        WriteInt(value.Length);
+        _writer.Write(value);
+    }
     public void WriteObject<T>(T value)
     {
         var buffer = GetSerializer().Serialize(value);

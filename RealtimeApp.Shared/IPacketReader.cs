@@ -11,6 +11,7 @@ public interface IPacketReader
     ulong ReadULong();
     long ReadLong();
     string ReadString();
-    byte[] ReadBytes(int count);
-    char[] ReadChars(int count);
+    byte[] ReadBytes();
+    char[] ReadChars();
+    float ReadFloat();
 }
