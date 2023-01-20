@@ -4,18 +4,24 @@ using System.Net.Sockets;
 using System.Text;
 
 using var udpClient = new UdpClient();
+var token = new CancellationTokenSource();
 
 Console.WriteLine("Client connected to - " + IPAddress.Loopback);
 
 udpClient.Connect(IPAddress.Loopback, 8888);
+using var file = File.AppendText("D:\\test.txt");
 
 Task.Run(async () =>
 {
-    var da = await udpClient.ReceiveAsync();
-    PrintMessage(da.Buffer);
-});
+    while (!token.IsCancellationRequested)
+    {
+        var da = await udpClient.ReceiveAsync(token.Token);
+        PrintMessage(da.Buffer);
+        file.Write(Encoding.UTF8.GetString(da.Buffer));
+    }
+}, token.Token);
 
-while (true)
+while (!token.IsCancellationRequested)
 {
     Console.WriteLine("Enter a message - ");
     var enteredMsg = Console.ReadLine() ?? "null";
@@ -27,6 +33,7 @@ while (true)
     
     if (enteredMsg.Contains("null") || enteredMsg.Contains("CLOSE"))
     {
+        token.Cancel();
         break;
     }
 }
