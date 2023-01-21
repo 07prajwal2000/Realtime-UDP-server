@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using RealtimeApp.Server.Abstractions;
+using System.Reflection;
 
 namespace RealtimeApp.Server.Initializers;
 
@@ -15,8 +16,8 @@ public class MethodMetadata
         Owner = owner;
     }
 
-    public void Invoke(byte[] data)
+    public void Invoke(ISender sender, string ip, byte[] data)
     {
-        Info.Invoke(Owner, new object[] { data });
+        Info.Invoke(Owner, new object[] { sender, ip, data });
     }
 }

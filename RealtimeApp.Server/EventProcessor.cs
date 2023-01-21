@@ -11,27 +11,28 @@ namespace RealtimeApp.Server;
 internal class EventProcessor
 {
     private readonly IDistributedCache cache;
-    private readonly IDataSender sender;
+    private IServer sender;
     private readonly IServerRpcCollection rpcCollection;
 
-    public EventProcessor(IDistributedCache cache, IDataSender sender, IServerRpcCollection rpcCollection)
+    public EventProcessor(IDistributedCache cache, IServerRpcCollection rpcCollection)
     {
         this.cache = cache;
-        this.sender = sender;
         this.rpcCollection = rpcCollection;
     }
 
-    public void ProcessEvents()
+    public void ProcessEvents(IServer sender)
     {
         ServerEvents.OnConnected += OnConnected;
         ServerEvents.OnDisconnected += OnDisconnected;
         ServerEvents.OnDataReceived += OnDataReceived;
+        this.sender = sender;
     }
 
     private Task OnDataReceived(byte[] buffer, string ip, TransportLayer layer)
     {
         if (layer == TransportLayer.UDP)
         {
+            rpcCollection.Invoke(sender, "TestMethod", ip, buffer);
             return sender.Send(buffer, ip, layer, default);
         }
         return Task.CompletedTask;

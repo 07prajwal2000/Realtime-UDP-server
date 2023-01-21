@@ -23,17 +23,16 @@ services.AddLogging(b =>
 });
 
 services.AddSingleton<IConfiguration>(configuration);
-services.AddServerEvents();
-services.AddSingleton<IServer, Server>();
-services.AddSingleton<IDataSender>(provider => provider.GetRequiredService<IServer>());
-
 services.AddSingleton<EventProcessor>();
+services.AddSingleton<IServer, Server>();
+services.AddServerEvents();
+
 services.AddStackExchangeRedisCache(o =>
 {
     o.Configuration = configuration.GetConnectionString("Redis");
 });
 
-using var builder = services.BuildServiceProvider();
-var server = builder.GetRequiredService<IServer>();
+var builder = services.BuildServiceProvider();
+var server = builder.GetService<IServer>();
 
 server.Start();

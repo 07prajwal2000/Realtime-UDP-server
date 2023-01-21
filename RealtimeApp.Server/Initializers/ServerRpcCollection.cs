@@ -1,4 +1,6 @@
-﻿namespace RealtimeApp.Server.Initializers;
+﻿using RealtimeApp.Server.Abstractions;
+
+namespace RealtimeApp.Server.Initializers;
 
 public class ServerRpcCollection : IServerRpcCollection
 {
@@ -9,13 +11,13 @@ public class ServerRpcCollection : IServerRpcCollection
         this.registeredFunctions = registeredFunctions;
     }
 
-    public Task Invoke(string name, string ip, byte[] data)
+    public Task Invoke(ISender sender, string name, string ip, byte[] data)
     {
         if(!registeredFunctions.TryGetValue(name, out var method))
         {
             return Task.CompletedTask;
         }
-        return Task.Run(() => method.Invoke(ip, data));
+        return Task.Run(() => method.Invoke(sender, ip, data));
     }
 
 }

@@ -21,21 +21,12 @@ public static class RegisterFunctions
             return services;
         }
 
-        services.AddSingleton<IServerRpcCollection, ServerRpcCollection>(provider => new ServerRpcCollection(AssemblySearch(provider)));
-
-        return services;
-    }
-
-    private static Dictionary<string, MethodMetadata> AssemblySearch(IServiceProvider provider)
-    {
         Dictionary<string, MethodMetadata> registeredFunctions = new();
 
         var members = Assembly.GetExecutingAssembly()
             .GetTypes()
             .Where(x => !x.IsInterface && !x.IsAbstract)
             .Where(x => x.GetCustomAttribute<ServerRPCInit>() != null);
-
-        var dataSender = provider.GetRequiredService<IDataSender>();
 
         foreach (var member in members)
         {
@@ -45,7 +36,7 @@ public static class RegisterFunctions
                 .Select(x =>
                 {
                     // NOTE: Want to add any params to server rpc class, add it here.
-                    return new MethodMetadata(x.GetCustomAttribute<ServerRpc>()?.Name ?? x.Name, x, Activator.CreateInstance(member, args: dataSender)!);
+                    return new MethodMetadata(x.GetCustomAttribute<ServerRpc>()?.Name ?? x.Name, x, Activator.CreateInstance(member)!);
                 });
 
             foreach (var m in metaData)
@@ -57,8 +48,14 @@ public static class RegisterFunctions
             }
 
         }
+        services.AddSingleton<IServerRpcCollection, ServerRpcCollection>(provider => new(registeredFunctions));
 
-        return registeredFunctions;
+        return services;
     }
+
+    //private static Dictionary<string, MethodMetadata> AssemblySearch(IServiceProvider provider)
+    //{
+        
+    //}
 
 }

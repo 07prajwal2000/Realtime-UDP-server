@@ -81,7 +81,7 @@ internal class Server : IServer
         });
     }
 
-    public void RegisterEvents()
+    private void RegisterEvents()
     {
         server.Events.ClientConnected += ClientConnected;
         server.Events.ClientDisconnected += ClientDisconnected;
