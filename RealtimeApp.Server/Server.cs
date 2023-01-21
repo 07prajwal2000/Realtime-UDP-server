@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using RealtimeApp.Server.Abstractions;
 using SuperSimpleTcp;
 using System.Net;
 using System.Net.Sockets;
@@ -30,10 +31,12 @@ internal class Server : IServer
     public const string SERVER_IP = "127.0.0.1";
     public const ushort SERVER_PORT = 8888;
 
+    public static readonly IPEndPoint SERVER_UDP_IP = new IPEndPoint(IPAddress.Loopback, SERVER_PORT + 1);
+
     public Server(ILogger<Server> logger, EventProcessor eventProcessor)
 	{
 		server = new SimpleTcpServer(SERVER_IP, SERVER_PORT);
-        udpServer = new UdpClient(SERVER_IP, SERVER_PORT);
+        udpServer = new UdpClient(SERVER_UDP_IP);
         this.logger = logger;
         this.eventProcessor = eventProcessor;
     }
@@ -104,7 +107,8 @@ internal class Server : IServer
     {
         if (layer == TransportLayer.UDP)
         {
-            var ip = new IPEndPoint(IPAddress.Parse(endpoint), 0);
+            var ipAddr = endpoint.Split(':');
+            var ip = new IPEndPoint(IPAddress.Parse(ipAddr[0]), int.Parse(ipAddr[1]));
             return udpServer.SendAsync(data, ip, token).AsTask();
         }
         return server.SendAsync(endpoint, data, token);

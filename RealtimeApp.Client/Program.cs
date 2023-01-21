@@ -54,11 +54,51 @@ using RealtimeApp;
 using RealtimeApp.Shared;
 using RealtimeApp.Shared.Serializers;
 using SuperSimpleTcp;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
 
 BasePacket.InitializeSerializer(new JsonPacketSerializer());
 
 const string SERVER_IP = "127.0.0.1";
 const ushort SERVER_PORT = 8888;
+IPEndPoint SERVER_UDP_IP = new IPEndPoint(IPAddress.Loopback, SERVER_PORT + 1);
+
+using var udpClient = new UdpClient();
+udpClient.Connect(SERVER_UDP_IP);
+var token = new CancellationTokenSource();
+
+Task.Run(async () =>
+{
+    var writerTask = Task.Run(async () =>
+    {
+        var i = 0;
+
+        while (i++ < 10)
+        {
+            Console.WriteLine("Sent - " + i + " times");
+            udpClient.Send(Encoding.UTF8.GetBytes($"from udp client - {i}"));
+            await Task.Delay(1000);
+        }
+
+    }, token.Token);
+
+    while (!token.IsCancellationRequested)
+    {
+        try
+        {
+            var response = await udpClient.ReceiveAsync();
+            var msg = "UDP: Server response - " + response.Buffer.GetString();
+            File.AppendAllText("D:\\test.txt", msg);
+            Console.WriteLine(msg);
+        }
+        catch (Exception e)
+        {
+            File.AppendAllText("D:\\test.txt", $"UDP: Error: {e}");
+        }
+    }
+    await writerTask;
+});
 
 var client = new SimpleTcpClient(SERVER_IP, SERVER_PORT);
 client.Events.DataReceived += Events_DataReceived;
@@ -79,7 +119,7 @@ Console.WriteLine("Press esc to close");
 
 while (Console.ReadKey().Key != ConsoleKey.Escape)
 {
-
+    token.Cancel();
 }
 
 client.Disconnect();

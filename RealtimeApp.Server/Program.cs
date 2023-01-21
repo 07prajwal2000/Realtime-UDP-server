@@ -2,6 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using RealtimeApp.Server;
+using RealtimeApp.Server.Abstractions;
+using RealtimeApp.Server.Initializers;
 using RealtimeApp.Shared;
 using RealtimeApp.Shared.Serializers;
 
@@ -21,8 +23,9 @@ services.AddLogging(b =>
 });
 
 services.AddSingleton<IConfiguration>(configuration);
-
+services.AddServerEvents();
 services.AddSingleton<IServer, Server>();
+services.AddSingleton<IDataSender>(provider => provider.GetRequiredService<IServer>());
 
 services.AddSingleton<EventProcessor>();
 services.AddStackExchangeRedisCache(o =>
