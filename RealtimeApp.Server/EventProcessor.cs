@@ -11,8 +11,10 @@ namespace RealtimeApp.Server;
 internal class EventProcessor
 {
     private readonly IDistributedCache cache;
-    private IServer sender;
+    private ISender sender;
     private readonly IServerRpcCollection rpcCollection;
+
+    private TempMultiplayerServer tempMultiplayer;
 
     public EventProcessor(IDistributedCache cache, IServerRpcCollection rpcCollection)
     {
@@ -20,31 +22,35 @@ internal class EventProcessor
         this.rpcCollection = rpcCollection;
     }
 
-    public void ProcessEvents(IServer sender)
+    public void ProcessEvents(ISender sender)
     {
         ServerEvents.OnConnected += OnConnected;
         ServerEvents.OnDisconnected += OnDisconnected;
         ServerEvents.OnDataReceived += OnDataReceived;
         this.sender = sender;
+        tempMultiplayer = new TempMultiplayerServer(sender);
     }
 
     private Task OnDataReceived(byte[] buffer, string ip, TransportLayer layer)
     {
-        if (layer == TransportLayer.UDP)
-        {
-            rpcCollection.Invoke(sender, "TestMethod", ip, buffer);
-            return sender.Send(buffer, ip, layer, default);
-        }
+        //if (layer == TransportLayer.UDP)
+        //{
+        //    rpcCollection.Invoke(sender, "TestMethod", ip, buffer);
+        //    return sender.Send(buffer, ip, layer, default);
+        //}
+        return tempMultiplayer.OnDataReceived(buffer, ip, layer);
         return Task.CompletedTask;
     }
 
     private Task OnDisconnected(string ip)
     {
+        return tempMultiplayer.OnDisconnected(ip);
         return cache.RemoveAsync(KeyBuilder(ip));
     }
 
     private Task OnConnected(string ip)
     {
+        return tempMultiplayer.OnConnected(ip);
         return Task.Run(async () =>
         {
             using var packet = new WriterPacket();

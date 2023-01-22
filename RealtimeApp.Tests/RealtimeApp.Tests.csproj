@@ -15,8 +15,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\RealtimeApp.Client\RealtimeApp.Client.csproj" />
-      <ProjectReference Include="..\RealtimeApp.Server\RealtimeApp.Server.csproj" />
       <ProjectReference Include="..\RealtimeApp.Shared\RealtimeApp.Shared.csproj" />
     </ItemGroup>
 

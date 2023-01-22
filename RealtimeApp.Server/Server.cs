@@ -8,8 +8,8 @@ namespace RealtimeApp.Server;
 
 public enum TransportLayer
 {
+    UDP,
     TCP,
-    UDP
 }
 
 public static class ServerEvents
@@ -31,7 +31,8 @@ internal class Server : IServer
     public const string SERVER_IP = "127.0.0.1";
     public const ushort SERVER_PORT = 8888;
 
-    public static readonly IPEndPoint SERVER_UDP_IP = new IPEndPoint(IPAddress.Loopback, SERVER_PORT + 1);
+    //public static readonly IPEndPoint SERVER_UDP_IP = new IPEndPoint(IPAddress.Parse(SERVER_IP), SERVER_PORT + 1);
+    public static readonly IPEndPoint SERVER_UDP_IP = new IPEndPoint(IPAddress.Parse(SERVER_IP), SERVER_PORT);
 
     public Server(ILogger<Server> logger, EventProcessor eventProcessor)
 	{
@@ -110,6 +111,7 @@ internal class Server : IServer
             var ipAddr = endpoint.Split(':');
             var ip = new IPEndPoint(IPAddress.Parse(ipAddr[0]), int.Parse(ipAddr[1]));
             return udpServer.SendAsync(data, ip, token).AsTask();
+            //return udpServer.SendAsync(data, endpoint, token).AsTask();
         }
         return server.SendAsync(endpoint, data, token);
     }

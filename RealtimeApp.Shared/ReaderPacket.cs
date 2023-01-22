@@ -4,10 +4,6 @@ public sealed class ReaderPacket : BasePacket, IPacketReader
 {
     private BinaryReader _reader;
 
-    public ReaderPacket()
-    {
-        _reader = new BinaryReader(MemoryStream);
-    }
     public ReaderPacket(byte[] buffer) : base(buffer)
     {
         _reader = new BinaryReader(MemoryStream);

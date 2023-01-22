@@ -45,55 +45,6 @@
 
 //tcpServer.Start();
 
-using RealtimeApp.Tests.AttributeTests;
-using System.Reflection;
-using System.Text;
+using RealtimeApp.Tests.RaylibTest;
 
-var members = Assembly.GetExecutingAssembly()
-            .GetTypes()
-            .Where(x => !x.IsInterface && !x.IsAbstract);
-
-var attrs = members.Where(x => x.GetCustomAttribute<Attr>() != null);
-
-var methodDict = new Dictionary<string, MC>();
-
-foreach (var attr in attrs)
-{
-    var methods = attr.GetMethods();
-    var methodWithAttrs = methods
-        .Where(x => x.GetCustomAttribute<MethodAttr>() != null)
-        .Select(x => 
-        new MC(x.GetCustomAttribute<MethodAttr>()?.name ?? x.Name, x, Activator.CreateInstance(attr)!));
-
-    var inst = Activator.CreateInstance(attr);
-    foreach (var m in methodWithAttrs)
-    {
-        if (!methodDict.TryAdd(m.MethodName, m))
-        {
-            throw new MethodExistsException(m.MethodName);
-        }
-    }
-}
-
-methodDict.First().Value.Invoke(Encoding.UTF8.GetBytes("PRAJWAL ARADHYA - method key - " + methodDict.First().Key));
-
-Console.WriteLine();
-
-public class MC
-{
-    public readonly string MethodName;
-    private readonly MethodInfo Info;
-    private readonly object Owner;
-
-    public MC(string methodName, MethodInfo info, object owner)
-    {
-        MethodName = methodName;
-        Info = info;
-        Owner = owner;
-    }
-
-    public void Invoke(byte[] data)
-    {
-        Info.Invoke(Owner, new object[] { data });
-    }
-}
+await Runner.Run();

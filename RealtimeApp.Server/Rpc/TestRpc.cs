@@ -1,5 +1,4 @@
-﻿using System;
-using RealtimeApp.Server.Abstractions;
+﻿using RealtimeApp.Server.Abstractions;
 using RealtimeApp.Server.Initializers.Attributes;
 
 namespace RealtimeApp.Server.Rpc;
