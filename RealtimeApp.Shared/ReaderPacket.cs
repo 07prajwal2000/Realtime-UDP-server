@@ -4,10 +4,6 @@ public sealed class ReaderPacket : BasePacket, IPacketReader
 {
     private BinaryReader _reader;
 
-    public ReaderPacket()
-    {
-        _reader = new BinaryReader(MemoryStream);
-    }
     public ReaderPacket(byte[] buffer) : base(buffer)
     {
         _reader = new BinaryReader(MemoryStream);
@@ -22,10 +18,21 @@ public sealed class ReaderPacket : BasePacket, IPacketReader
     
     public ulong ReadULong() => _reader.ReadUInt64();
     public long ReadLong() => _reader.ReadInt64();
+
+    public float ReadFloat() => _reader.ReadSingle();
+    public double ReadDouble() => _reader.ReadDouble();
     
     public string ReadString() => _reader.ReadString();
-    public byte[] ReadBytes(int count) => _reader.ReadBytes(count);
-    public char[] ReadChars(int count) => _reader.ReadChars(count);
+    public byte[] ReadBytes()
+    {
+        var count = ReadInt();
+        return _reader.ReadBytes(count);
+    }
+    public char[] ReadChars()
+    {
+        var count = ReadInt();
+        return _reader.ReadChars(count);
+    }
     public T? ReadObject<T>()
     {
         var length = _reader.ReadInt32();

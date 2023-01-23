@@ -13,4 +13,6 @@ public interface IPacketWriter
     void WriteString(string value);
     void WriteBytes(byte[] value);
     void WriteChars(char[] value);
+    void WriteFloat(float value);
+    void WriteDouble(double value);
 }

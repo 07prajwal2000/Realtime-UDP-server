@@ -1,38 +1,35 @@
-﻿using System.Security.Cryptography;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace RealtimeApp.Shared;
 
-public readonly struct HashValue
+public struct HashValue
 {
-    private static readonly SHA256 Sha256;
-    public readonly byte[] Hash;
+    public static readonly SHA256 sHA256 = SHA256.Create();
+    public byte[] Hash { get; set; }
 
-    #region CTOR
-    
     public HashValue(byte[] hash)
     {
         Hash = hash;
     }
-    static HashValue()
-    {
-        Sha256 = SHA256.Create();
-    }
-    
-    #endregion
-    
+
     public static HashValue Generate(byte[] value)
     {
-        Span<byte> hash = Sha256.ComputeHash(value);
+        Span<byte> hash = sHA256.ComputeHash(value);
         return new HashValue(hash.Slice(0, 16).ToArray());
     }
-    
+
     public bool Compare(byte[] other)
     {
         if (other.Length != Hash.Length)
         {
             return false;
         }
-        for (var i = 0; i < Hash.Length; i++)
+        for (int i = 0; i < Hash.Length; i++)
         {
             if (Hash[i] != other[i])
             {
@@ -41,6 +38,7 @@ public readonly struct HashValue
         }
         return true;
     }
+
     public bool Compare(HashValue otherValue)
     {
         var other = otherValue.Hash;

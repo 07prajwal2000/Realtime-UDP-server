@@ -26,18 +26,18 @@ public class UserSessionToken
 {
     private static WriterPacket packet;
 
-    // public static UserSessionToken Build(string username, string password)
-    // {
-    //     var sessionID = Constants.GetHash();
-    //     var unameBytes = username.ToBytes();
-    //     var pwdBytes = password.ToBytes();
-    //
-    //     packet = new WriterPacket();
-    //     
-    //     packet.WriteBytes(sessionID.Hash);
-    //     packet.WriteBytes(unameBytes);
-    //     packet.WriteBytes(pwdBytes);
-    //
-    //     return new UserSessionToken();
-    // }
+    public static UserSessionToken Build(string username, string password)
+    {
+        var sessionID = Constants.GetHash();
+        var unameBytes = username.ToBytes();
+        var pwdBytes = password.ToBytes();
+
+        packet = new WriterPacket();
+        
+        packet.WriteBytes(sessionID.Hash);
+        packet.WriteBytes(unameBytes);
+        packet.WriteBytes(pwdBytes);
+
+        return new UserSessionToken();
+    }
 }

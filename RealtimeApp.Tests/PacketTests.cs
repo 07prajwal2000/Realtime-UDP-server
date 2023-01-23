@@ -37,7 +37,7 @@ public class PacketTests
         Console.WriteLine(reader.ReadObject<User>());
 
         var length = reader.ReadInt();
-        Console.WriteLine(Encoding.UTF8.GetString(reader.ReadBytes(length)));
+        Console.WriteLine(Encoding.UTF8.GetString(reader.ReadBytes()));
     }
 }
 
