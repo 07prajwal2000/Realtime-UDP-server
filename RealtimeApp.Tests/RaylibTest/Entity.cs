@@ -7,10 +7,11 @@ namespace RealtimeApp.Tests.RaylibTest;
 public enum MessageType
 {
     SYNC_POSITION = 1,
-    NEW_PLAYER_JOIN,
     JOIN_TO_SERVER,
     SUCCESSFULLY_CONNECTED,
     SYNC_EXISTING_STATE,
+    NEW_PLAYER_JOINED,
+    REGISTER_UDP,
 }
 
 internal class Entity
@@ -19,12 +20,12 @@ internal class Entity
     private Vector3 pos;
 
     private string playerID;
-    public bool owner = false;
+    public bool owner;
     private readonly Color myColor;
 
     public Entity(string entityId, Color color, bool owner = false, Vector3 currentPos = new Vector3())
     {
-        timer = new Interval(.20f);
+        timer = new Interval(.15f);
         playerID = entityId;
         myColor = color;
         pos = currentPos;
@@ -55,7 +56,6 @@ internal class Entity
     private void HandleTcpData(byte[] data, string ip)
     {
         using var packet = new ReaderPacket(data);
-
     }
 
     private void HandleUdpData(byte[] data, string ip)
@@ -65,22 +65,24 @@ internal class Entity
         switch (type)
         {
             case MessageType.SYNC_POSITION:
+                SyncPosition(packet);
                 break;
+        }
+    }
 
-            case MessageType.NEW_PLAYER_JOIN:
-                break;
-
-            case MessageType.JOIN_TO_SERVER:
-                break;
-
-            case MessageType.SUCCESSFULLY_CONNECTED:
-                break;
-
-            case MessageType.SYNC_EXISTING_STATE:
-                break;
-
-            default:
-                break;
+    private void SyncPosition(ReaderPacket packet)
+    {
+        // if (packet.Length != 18)
+        // {
+        //     return;
+        // }
+        var enemyId = packet.ReadString();
+        var x = packet.ReadFloat();
+        var y = packet.ReadFloat();
+        if (enemyId == playerID)
+        {
+            networkPos.X = x;
+            networkPos.Y = y;
         }
     }
 
@@ -88,11 +90,18 @@ internal class Entity
     {
         frameTime = Raylib.GetFrameTime();
 
-        //SendPositionToServer();
+        if (!owner)
+        {
+            pos = Vector3.Lerp(pos, networkPos, .16f);
+            Raylib.DrawCircle((int)pos.X, (int)pos.Y, 28, owner ? Raylib.DARKGREEN : Raylib.RED);
+            Raylib.DrawCircle((int)pos.X, (int)pos.Y, 25, myColor);
+            return;
+        }
+        SendPositionToServer();
 
         var newPos = Movement();
 
-        pos = Vector3.Lerp(pos, new Vector3(newPos.X, newPos.Y, 0), .16f);
+        pos = Vector3.Lerp(pos, newPos, .16f);
         Raylib.DrawRectangle(800, 10, 10, 10, myColor);
         Raylib.DrawCircle((int)pos.X, (int)pos.Y, 28, owner ? Raylib.DARKGREEN : Raylib.RED);
         Raylib.DrawCircle((int)pos.X, (int)pos.Y, 25, myColor);
@@ -106,9 +115,9 @@ internal class Entity
             {
                 using var packet = new WriterPacket();
                 packet.WriteInt((int)MessageType.SYNC_POSITION);
+                packet.WriteString(playerID);
                 packet.WriteFloat(pos.X);
                 packet.WriteFloat(pos.Y);
-
                 Client.Send(packet, 0);
             });
         }
@@ -120,7 +129,7 @@ internal class Entity
         {
             return networkPos;
         }
-        var newPos = new Vector3(pos.X, pos.Y, 0);
+        var newPos = pos with { Z = 0 };
         if (Raylib.IsKeyDown(KeyboardKey.KEY_LEFT))
         {
             newPos.X -= moveSpeed * frameTime;

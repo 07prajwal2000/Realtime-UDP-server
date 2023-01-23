@@ -6,10 +6,11 @@ namespace RealtimeApp.Server;
 public enum MessageType
 {
     SYNC_POSITION = 1,
-    NEW_PLAYER_JOIN,
     JOIN_TO_SERVER,
     SUCCESSFULLY_CONNECTED,
     SYNC_EXISTING_STATE,
+    NEW_PLAYER_JOINED,
+    REGISTER_UDP,
 }
 
 public struct PlayerState
@@ -27,12 +28,18 @@ public struct PlayerState
     public Color color { get; set; }
 }
 
-internal class TempMultiplayerServer
+internal partial class TempMultiplayerServer
 {
     private readonly ISender sender;
 
+    /// <summary>
+    /// (key= Client IP, value= client id) 
+    /// </summary>
     private Dictionary<string, string> clients = new();
 
+    /// <summary>
+    /// (key= Client IP, value= player state) 
+    /// </summary>
     private Dictionary<string, PlayerState> serverState = new();
 
     public TempMultiplayerServer(ISender sender)
@@ -41,16 +48,17 @@ internal class TempMultiplayerServer
     }
 
 	public Task OnDataReceived(byte[] buffer, string ip, TransportLayer layer)
-	{
+    {
+        Task task = null;
         try
         {
             if (layer == TransportLayer.UDP)
             {
-                ParseUdpData(buffer, ip);
+                task = ParseUdpData(buffer, ip);
             }
             else
             {
-                ParseTcpData(buffer, ip);
+                task = ParseTcpData(buffer, ip);
             }
         }
         catch (Exception e)
@@ -58,62 +66,49 @@ internal class TempMultiplayerServer
             Console.WriteLine(e);
         }
 
-        return Task.CompletedTask;
+        return task ?? Task.CompletedTask;
 	}
 
-    int counter = 0;
-
-    private void ParseUdpData(byte[] buffer, string ip)
+    private Task ParseUdpData(byte[] buffer, string ip)
     {
         using var packet = new ReaderPacket(buffer);
         var type = (MessageType)packet.ReadInt();
         switch (type)
         {
             case MessageType.SYNC_POSITION:
-                break;
-
-            case MessageType.NEW_PLAYER_JOIN:
-                break;
-
-            case MessageType.JOIN_TO_SERVER:
-                break;
-
-            case MessageType.SUCCESSFULLY_CONNECTED:
-                break;
-
-            case MessageType.SYNC_EXISTING_STATE:
-                break;
+                return SYNC_POSITION(packet, ip);
+            case MessageType.REGISTER_UDP:
+                return REGISTER_UDP(packet, ip);
+            default:
+                return Task.CompletedTask;
         }
     }
 
-    private void ParseTcpData(byte[] buffer, string ip)
+    private Task ParseTcpData(byte[] buffer, string ip)
     {
         using var packet = new ReaderPacket(buffer);
         var type = (MessageType)packet.ReadInt();
         switch (type)
         {
-            case MessageType.SYNC_POSITION:
-                break;
-
-            case MessageType.NEW_PLAYER_JOIN:
-                break;
-
             case MessageType.JOIN_TO_SERVER:
-                break;
+                return JOIN_TO_SERVER(packet, ip);
 
-            case MessageType.SUCCESSFULLY_CONNECTED:
-                break;
-
-            case MessageType.SYNC_EXISTING_STATE:
-                break;
+            default:
+                return Task.CompletedTask;
         }
     }
 
     public Task OnDisconnected(string ip)
     {
         Console.WriteLine("Client disconnected - " + ip);
-        clients.Remove(ip);
-        //serverState.Remove(ip);
+        
+        if (clients.TryGetValue(ip, out var id) && clients.Remove(ip))
+        {
+            // var udpIp = udpClients.FirstOrDefault(x => x.Value == id).Key;
+            // udpClients.Remove(udpIp);
+            serverState.Remove(ip);
+        }
+        
         return Task.CompletedTask;
     }
 
