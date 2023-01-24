@@ -55,7 +55,8 @@ internal class Client : IDisposable
 
     public void Start()
     {
-        const string SERVER_IP = "127.0.0.1";
+        // const string SERVER_IP = "127.0.0.1";
+        const string SERVER_IP = "192.168.1.7";
         const ushort SERVER_PORT = 8888;
         IPEndPoint SERVER_UDP_IP = new IPEndPoint(IPAddress.Parse(SERVER_IP), SERVER_PORT);
         //IPEndPoint SERVER_UDP_IP = new IPEndPoint(IPAddress.Loopback, SERVER_PORT + 1);

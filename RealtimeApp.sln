@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealtimeApp.Shared", "Realt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealtimeApp.Tests", "RealtimeApp.Tests\RealtimeApp.Tests.csproj", "{D09BB22E-18E0-4FCA-84C3-9CE26F797B79}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReaylibApp", "ReaylibApp\ReaylibApp.csproj", "{7EDEE730-2E14-4312-B32E-D6CC43A29E13}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{D09BB22E-18E0-4FCA-84C3-9CE26F797B79}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D09BB22E-18E0-4FCA-84C3-9CE26F797B79}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D09BB22E-18E0-4FCA-84C3-9CE26F797B79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EDEE730-2E14-4312-B32E-D6CC43A29E13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EDEE730-2E14-4312-B32E-D6CC43A29E13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EDEE730-2E14-4312-B32E-D6CC43A29E13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EDEE730-2E14-4312-B32E-D6CC43A29E13}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

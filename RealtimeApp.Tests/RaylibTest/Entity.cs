@@ -34,7 +34,7 @@ internal class Entity
     }
 
     private float frameTime;
-    private float moveSpeed = 220;
+    private float moveSpeed = 620;
 
     private Vector3 networkPos;
 
